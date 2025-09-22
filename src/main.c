@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "command-render/render.h"
 
 int main() {
@@ -8,18 +9,32 @@ int main() {
     ctx.height = 20;  // Square grid for Tetris
     ctx.buffer = (char*)malloc(ctx.width * ctx.height * 4);  // RGBA
     
-    // Initialize block position (will be set by animate_falling_cube)
+    // Initialize block position (legacy)
     ctx.block_x = 0;
     ctx.block_y = 0;
+    ctx.current_asset = NULL;
 
-    printf("Starting Tetris cube animation...\n");
+    printf("Starting Tetris asset animation demo...\n");
     printf("Press Ctrl+C to stop\n\n");
     
-    // Run the falling cube animation
-    animate_falling_cube(&ctx);
+    // Test cube animation
+    printf("Demonstrating falling cube...\n");
+    struct TetrisAsset* cube = create_cube_asset(0, 0);
+    animate_falling_asset(&ctx, cube, 200);  // 200ms refresh rate
+    printf("Cube animation complete!\n\n");
     
-    printf("\nCube has reached the bottom!\n");
+    // Wait a moment
+    usleep(1000000);  // 1 second pause
     
+    // Test line animation
+    printf("Demonstrating falling line...\n");
+    struct TetrisAsset* line = create_line_asset(0, 0);
+    animate_falling_asset(&ctx, line, 150);  // 150ms refresh rate (faster)
+    printf("Line animation complete!\n");
+    
+    // Clean up
+    free_asset(cube);
+    free_asset(line);
     free(ctx.buffer);
     return 0;
 }

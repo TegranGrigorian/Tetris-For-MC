@@ -9,3 +9,6 @@ all: src/main.o src/command-render/render.o
 run: all
 	watch ./main
 
+#clean the files
+clean:
+	rm -f src/*.o src/command-render/*.o main 
