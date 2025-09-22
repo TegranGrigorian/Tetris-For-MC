@@ -5,6 +5,7 @@ Tetris-For-MC/
 ├── Makefile
 ├── README.md
 └── src
+    ├── main.c
     ├── assets
     │   ├── cube.c
     │   ├── cube.h
@@ -16,7 +17,6 @@ Tetris-For-MC/
     ├── input
     │   ├── input.c
     │   └── input.h
-    ├── main.c
     ├── render
     │   ├── render.c
     │   └── render.h
