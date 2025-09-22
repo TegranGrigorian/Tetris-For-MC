@@ -65,7 +65,7 @@ char map_normal_key_to_action(char key) {
         case 'S':
             return 'S'; // Start
         default:
-            return 0; // No action
+            return 0; // default
     }
 }
 

@@ -1,7 +1,7 @@
 #include "render.h"
 #include <unistd.h> // im slow
-#include "assets/cube.h"
-#include "assets/line.h"
+#include "../assets/cube.h"
+#include "../assets/line.h"
 
 void render_frame(struct RenderContext* ctx) {
     system("clear");  // Clear the terminal screen

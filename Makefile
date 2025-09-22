@@ -1,9 +1,10 @@
-# src/command-render/render.h
+# Updated Makefile for new directory structure
+# src/render/render.h
 # src/main.c
 
 #compile the program
-all: src/main.o src/command-render/render.o src/test.o src/input-manager/input.o
-	gcc -o main src/main.o src/command-render/render.o src/test.o src/input-manager/input.o -lm
+all: src/main.o src/render/render.o src/test/test.o src/input/input.o src/assets/cube.o src/assets/line.o
+	gcc -o main src/main.o src/render/render.o src/test/test.o src/input/input.o src/assets/cube.o src/assets/line.o -lm
 
 #run the program
 run: all
@@ -11,4 +12,4 @@ run: all
 
 #clean the files
 clean:
-	rm -f src/*.o src/command-render/*.o main src/test.o src/input-manager/*.o
+	rm -f src/*.o src/render/*.o src/test/*.o src/input/*.o src/assets/*.o src/game/*.o main

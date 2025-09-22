@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "command-render/render.h"
-#include "input-manager/input.h"
+#include "../render/render.h"
+#include "../input/input.h"
 #include "test.h"
 
 void cube_fall_test() {
