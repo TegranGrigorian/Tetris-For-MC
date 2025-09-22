@@ -14,20 +14,18 @@ char get_input() {
     new_term = old_term;
     new_term.c_lflag &= ~(ICANON | ECHO);
     new_term.c_cc[VMIN] = 0;  // Don't wait for characters
-    new_term.c_cc[VTIME] = 1; // Wait 0.1 seconds max
+    new_term.c_cc[VTIME] = 1; // Wait 1 tenth of a second
     tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
     
-    // Try to read up to 3 characters (for escape sequences)
     bytes_read = read(STDIN_FILENO, buffer, 3);
     
-    // Restore terminal settings
     tcsetattr(STDIN_FILENO, TCSANOW, &old_term);
     
     if (bytes_read == 0) {
         return 0; // No input
     }
     
-    // Check for arrow key escape sequences
+    // arrow keys
     if (bytes_read == 3 && buffer[0] == 27 && buffer[1] == 91) {
         switch (buffer[2]) {
             case 65: return 1; // Up Arrow
@@ -37,22 +35,18 @@ char get_input() {
         }
     }
     
-    // Check for normal characters
+    // normal
     if (bytes_read == 1 && buffer[0] != 27) {
         return map_normal_key_to_action(buffer[0]);
     }
     
-    return 0; // Unknown input
+    return 0; // default
 }
-
-// Helper functions for compatibility
 char get_arrow_key_input() {
-    // This function is now handled by get_input()
     return get_input();
 }
 
 char get_normal_key_input() {
-    // This function is now handled by get_input()
     return get_input();
 }
 
