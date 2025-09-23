@@ -12,15 +12,15 @@ void cube_fall_test() {
     ctx.width = 20;
     ctx.height = 20;
     ctx.buffer = malloc(ctx.width * ctx.height);
-    init_board(&ctx);  // Initialize the board
+    init_board(&ctx);
     
     printf("Demonstrating falling cube...\n");
     struct TetrisAsset* cube = create_cube_asset(0, 0);
-    animate_falling_asset(&ctx, cube, 300);  // 300ms refresh rate
+    animate_falling_asset(&ctx, cube, 300);
     printf("Cube animation complete!\n");
     
     free_asset(cube);
-    free_board(&ctx);  // Clean up the board
+    free_board(&ctx);
     free(ctx.buffer);
 }
 
@@ -29,15 +29,15 @@ void line_fall_test() {
     ctx.width = 20;
     ctx.height = 20;
     ctx.buffer = malloc(ctx.width * ctx.height);
-    init_board(&ctx);  // Initialize the board
+    init_board(&ctx);
 
     printf("Demonstrating falling line...\n");
     struct TetrisAsset* line = create_line_asset(0, 0);
-    animate_falling_asset(&ctx, line, 150);  // 150ms refresh rate (faster)
+    animate_falling_asset(&ctx, line, 150);
     printf("Line animation complete!\n");
 
     free_asset(line);
-    free_board(&ctx);  // Clean up the board
+    free_board(&ctx);
     free(ctx.buffer);
 }
 
@@ -53,7 +53,7 @@ void input_test() {
         } else if (input != 0) {
             printf("Input: %c (ID: %d)\n", input, input);
         }
-        usleep(100000); // Small delay to prevent spam
+        usleep(100000);
     } while (1);
 }
 
@@ -62,7 +62,7 @@ void interactive_asset_test() {
     ctx.width = 20;
     ctx.height = 20;
     ctx.buffer = malloc(ctx.width * ctx.height);
-    init_board(&ctx);  // Initialize the board
+    init_board(&ctx);
     
     printf("Tetris Test!\n");
     printf("┌─────────────────────────────────┐\n");
@@ -78,13 +78,13 @@ void interactive_asset_test() {
     printf("  • Smooth one-input-per-frame control\n");
     printf("  • Automatic falling\n\n");
     printf("Press any key to start...\n");
-    get_single_input(); // Wait for user to be ready
+    get_single_input();
     
     struct TetrisAsset* cube = create_cube_asset(0, 0);
-    animate_interactive_falling_asset(&ctx, cube, 80);  // 80ms refresh rate for responsive control
+    animate_interactive_falling_asset(&ctx, cube, 80);
     
     free_asset(cube);
-    free_board(&ctx);  // Clean up the board
+    free_board(&ctx);
     free(ctx.buffer);
 }
 
@@ -94,7 +94,7 @@ void continuous_spawn_test() {
     ctx.height = 20;
     ctx.buffer = malloc(ctx.width * ctx.height);
     
-    printf("🎮 Complete Tetris Game!\n");
+    printf("Complete Tetris Game!\n");
     printf("┌─────────────────────────────────┐\n");
     printf("│        FULL TETRIS GAME         │\n");
     printf("│  ←  →  : Move left/right        │\n");
@@ -102,7 +102,7 @@ void continuous_spawn_test() {
     printf("│  ↑     : Rotate piece           │\n");
     printf("│  q     : Quit game              │\n");
     printf("└─────────────────────────────────┘\n");
-    printf("\n✨ Features:\n");
+    printf("\nFeatures:\n");
     printf("  • All 7 Tetris pieces (I,O,T,S,Z,J,L)\n");
     printf("  • Piece rotation with ↑ key\n");
     printf("  • Line clearing & scoring\n");
@@ -111,10 +111,9 @@ void continuous_spawn_test() {
     printf("  • Smooth responsive controls\n");
     printf("  • Polished UI & scoring display\n\n");
     printf("Press any key to start the complete Tetris experience...\n");
-    get_single_input(); // Wait for user to be ready
+    get_single_input();
     
-    // Run the continuous Tetris game with even faster refresh rate for smoother movement
-    run_tetris_game(&ctx, 30);  // 30ms refresh rate for very responsive controls
+    run_tetris_game(&ctx, 30);
     
     free(ctx.buffer);
 }
