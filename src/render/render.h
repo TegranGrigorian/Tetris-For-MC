@@ -48,6 +48,11 @@ void animate_interactive_falling_asset(struct RenderContext* ctx, struct TetrisA
 void draw_asset(struct RenderContext* ctx, struct TetrisAsset* asset);
 struct TetrisAsset* create_cube_asset(int x, int y);
 struct TetrisAsset* create_line_asset(int x, int y);
+struct TetrisAsset* create_l_piece_asset(int x, int y);
+struct TetrisAsset* create_j_piece_asset(int x, int y);
+struct TetrisAsset* create_t_piece_asset(int x, int y);
+struct TetrisAsset* create_s_piece_asset(int x, int y);
+struct TetrisAsset* create_z_piece_asset(int x, int y);
 void free_asset(struct TetrisAsset* asset);
 void init_board(struct RenderContext* ctx);
 void free_board(struct RenderContext* ctx);

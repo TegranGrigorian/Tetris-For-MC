@@ -13,6 +13,7 @@ void check_collision(struct TetrisAsset* asset);
 int check_asset_collision(struct TetrisAsset* asset, struct RenderContext* ctx);
 int has_asset_landed(struct TetrisAsset* asset, struct RenderContext* ctx);
 int clear_lines(struct RenderContext* ctx);
+int is_game_over(struct RenderContext* ctx, struct TetrisAsset* asset);
 void run_tetris_game(struct RenderContext* ctx, unsigned int refresh_rate);
 
 #endif //ASSET_MANAGER_H

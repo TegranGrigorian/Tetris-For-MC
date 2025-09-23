@@ -93,26 +93,27 @@ void continuous_spawn_test() {
     ctx.height = 20;
     ctx.buffer = malloc(ctx.width * ctx.height);
     
-    printf("🎮 Continuous Tetris Test!\n");
+    printf("🎮 Complete Tetris Game!\n");
     printf("┌─────────────────────────────────┐\n");
-    printf("│     CONTINUOUS TETRIS GAME      │\n");
+    printf("│        FULL TETRIS GAME         │\n");
     printf("│  ←  →  : Move left/right        │\n");
     printf("│  ↓     : Move down faster       │\n");
     printf("│  ↑     : Rotate piece           │\n");
     printf("│  q     : Quit game              │\n");
     printf("└─────────────────────────────────┘\n");
     printf("\n✨ Features:\n");
-    printf("  • Random asset spawning\n");
+    printf("  • All 7 Tetris pieces (I,O,T,S,Z,J,L)\n");
     printf("  • Piece rotation with ↑ key\n");
-    printf("  • Line clearing when complete\n");
-    printf("  • Score tracking & speed increase\n");
-    printf("  • Continuous gameplay\n");
-    printf("  • Assets spawn after collision\n\n");
-    printf("Press any key to start the continuous game...\n");
+    printf("  • Line clearing & scoring\n");
+    printf("  • Progressive speed increase\n");
+    printf("  • Game over detection\n");
+    printf("  • Smooth responsive controls\n");
+    printf("  • Polished UI & scoring display\n\n");
+    printf("Press any key to start the complete Tetris experience...\n");
     get_single_input(); // Wait for user to be ready
     
-    // Run the continuous Tetris game with faster refresh rate
-    run_tetris_game(&ctx, 50);  // 50ms refresh rate for smoother gameplay
+    // Run the continuous Tetris game with even faster refresh rate for smoother movement
+    run_tetris_game(&ctx, 30);  // 30ms refresh rate for very responsive controls
     
     free(ctx.buffer);
 }

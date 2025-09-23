@@ -1,7 +1,13 @@
 #include "render.h"
 #include <unistd.h> // im slow
+#include <string.h> // for strcpy
 #include "../assets/cube.h"
 #include "../assets/line.h"
+#include "../assets/l_piece.h"
+#include "../assets/j_piece.h"
+#include "../assets/t_piece.h"
+#include "../assets/s_piece.h"
+#include "../assets/z_piece.h"
 #include "../input/input.h"
 #include "../game/asset_manager.h"
 
@@ -97,8 +103,11 @@ void render_frame_with_asset(struct RenderContext* ctx, struct TetrisAsset* asse
     // Use more efficient clear - just move cursor to top
     printf("\033[H\033[J");  // Move cursor to home and clear screen (less flickering)
     
-    // Display score and level at the top
-    printf("Score: %d  Level: %d  Lines: %d\n", ctx->score, ctx->level, ctx->lines_cleared_total);
+    // Display polished score and stats at the top
+    printf("┌────────────────────────────────────────┐\n");
+    printf("│ Score: %-8d Level: %-2d Lines: %-3d │\n", 
+           ctx->score, ctx->level, ctx->lines_cleared_total);
+    printf("└────────────────────────────────────────┘\n");
     
     // Draw top border
     printf("┌");
@@ -238,4 +247,121 @@ void rotate_asset(struct TetrisAsset* asset) {
     asset->shape = new_shape;
     asset->width = new_width;
     asset->height = new_height;
+}
+
+// Create an L piece asset
+struct TetrisAsset* create_l_piece_asset(int x, int y) {
+    struct TetrisAsset* asset = malloc(sizeof(struct TetrisAsset));
+    asset->type = ASSET_L_PIECE;
+    asset->width = 2;
+    asset->height = 3;
+    asset->x = x;
+    asset->y = y;
+    
+    // Allocate memory for the shape pattern
+    asset->shape = malloc(asset->height * sizeof(char*));
+    for (int i = 0; i < asset->height; i++) {
+        asset->shape[i] = malloc((asset->width + 1) * sizeof(char));
+        asset->shape[i][asset->width] = '\0';
+    }
+    
+    // Define L piece shape
+    strcpy(asset->shape[0], "# ");
+    strcpy(asset->shape[1], "# ");
+    strcpy(asset->shape[2], "##");
+    
+    return asset;
+}
+
+// Create a J piece asset
+struct TetrisAsset* create_j_piece_asset(int x, int y) {
+    struct TetrisAsset* asset = malloc(sizeof(struct TetrisAsset));
+    asset->type = ASSET_J_PIECE;
+    asset->width = 2;
+    asset->height = 3;
+    asset->x = x;
+    asset->y = y;
+    
+    // Allocate memory for the shape pattern
+    asset->shape = malloc(asset->height * sizeof(char*));
+    for (int i = 0; i < asset->height; i++) {
+        asset->shape[i] = malloc((asset->width + 1) * sizeof(char));
+        asset->shape[i][asset->width] = '\0';
+    }
+    
+    // Define J piece shape
+    strcpy(asset->shape[0], " #");
+    strcpy(asset->shape[1], " #");
+    strcpy(asset->shape[2], "##");
+    
+    return asset;
+}
+
+// Create a T piece asset
+struct TetrisAsset* create_t_piece_asset(int x, int y) {
+    struct TetrisAsset* asset = malloc(sizeof(struct TetrisAsset));
+    asset->type = ASSET_T_PIECE;
+    asset->width = 3;
+    asset->height = 2;
+    asset->x = x;
+    asset->y = y;
+    
+    // Allocate memory for the shape pattern
+    asset->shape = malloc(asset->height * sizeof(char*));
+    for (int i = 0; i < asset->height; i++) {
+        asset->shape[i] = malloc((asset->width + 1) * sizeof(char));
+        asset->shape[i][asset->width] = '\0';
+    }
+    
+    // Define T piece shape
+    strcpy(asset->shape[0], "###");
+    strcpy(asset->shape[1], " # ");
+    
+    return asset;
+}
+
+// Create an S piece asset
+struct TetrisAsset* create_s_piece_asset(int x, int y) {
+    struct TetrisAsset* asset = malloc(sizeof(struct TetrisAsset));
+    asset->type = ASSET_S_PIECE;
+    asset->width = 3;
+    asset->height = 2;
+    asset->x = x;
+    asset->y = y;
+    
+    // Allocate memory for the shape pattern
+    asset->shape = malloc(asset->height * sizeof(char*));
+    for (int i = 0; i < asset->height; i++) {
+        asset->shape[i] = malloc((asset->width + 1) * sizeof(char));
+        asset->shape[i][asset->width] = '\0';
+    }
+    
+    // Define S piece shape
+    strcpy(asset->shape[0], " ##");
+    strcpy(asset->shape[1], "## ");
+    
+    return asset;
+}
+
+// Create a Z piece asset
+struct TetrisAsset* create_z_piece_asset(int x, int y) {
+    struct TetrisAsset* asset = malloc(sizeof(struct TetrisAsset));
+    asset->type = ASSET_Z_PIECE;
+    asset->width = 3;
+    asset->height = 2;
+    asset->x = x;
+    asset->y = y;
+    
+    // Allocate memory for the shape pattern
+    asset->shape = malloc(asset->height * sizeof(char*));
+    for (int i = 0; i < asset->height; i++) {
+        asset->shape[i] = malloc((asset->width + 1) * sizeof(char));
+        asset->shape[i][asset->width] = '\0';
+    }
+    
+    // Define Z piece shape
+    strcpy(asset->shape[0], "## ");
+    strcpy(asset->shape[1], " ##");
+    
+    return asset;
 }

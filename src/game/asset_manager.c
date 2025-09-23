@@ -47,6 +47,11 @@ This file wont do anything else for the game managment, that will be done in the
 #include "../input/input.h"
 #include "../assets/cube.h"
 #include "../assets/line.h"
+#include "../assets/l_piece.h"
+#include "../assets/j_piece.h"
+#include "../assets/t_piece.h"
+#include "../assets/s_piece.h"
+#include "../assets/z_piece.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -66,24 +71,19 @@ struct TetrisAsset* spawn_asset(unsigned char asset_id, struct RenderContext* ct
             new_asset = create_line_asset(spawn_x, spawn_y); // Center 1x4 line
             break;
         case 2: // spawn L piece
-            // TODO: implement L piece when created
-            new_asset = create_cube_asset(spawn_x - 1, spawn_y); // Fallback to cube
+            new_asset = create_l_piece_asset(spawn_x - 1, spawn_y); // L piece (2x3)
             break;
         case 3: // spawn T piece
-            // TODO: implement T piece when created
-            new_asset = create_cube_asset(spawn_x - 1, spawn_y); // Fallback to cube
+            new_asset = create_t_piece_asset(spawn_x - 1, spawn_y); // T piece (3x2)
             break;
         case 4: // spawn S piece
-            // TODO: implement S piece when created
-            new_asset = create_cube_asset(spawn_x - 1, spawn_y); // Fallback to cube
+            new_asset = create_s_piece_asset(spawn_x - 1, spawn_y); // S piece (3x2)
             break;
         case 5: // spawn Z piece
-            // TODO: implement Z piece when created
-            new_asset = create_cube_asset(spawn_x - 1, spawn_y); // Fallback to cube
+            new_asset = create_z_piece_asset(spawn_x - 1, spawn_y); // Z piece (3x2)
             break;
         case 6: // spawn J piece
-            // TODO: implement J piece when created
-            new_asset = create_cube_asset(spawn_x - 1, spawn_y); // Fallback to cube
+            new_asset = create_j_piece_asset(spawn_x - 1, spawn_y); // J piece (2x3)
             break;
         default:
             printf("ERROR: Invalid asset ID %d\n", asset_id);
@@ -102,9 +102,8 @@ unsigned char random_asset() {
         seeded = 1;
     }
     
-    // picks a random asset, currently only 2 types (cube=0, line=1)
-    // Will expand to 7 total when more pieces are implemented
-    return rand() % 2;  // Only cube and line for now
+    // Now we have all 7 Tetris pieces: cube=0, line=1, L=2, T=3, S=4, Z=5, J=6
+    return rand() % 7;  // All 7 pieces available
 }
 
 unsigned char manage_asset(unsigned char input, struct TetrisAsset* asset, struct RenderContext* ctx) {
@@ -133,13 +132,19 @@ unsigned char manage_asset(unsigned char input, struct TetrisAsset* asset, struc
             }
             break;
         case 2: // Down Arrow
-            if (asset->y + asset->height < ctx->height) {  // Check bottom boundary
+            // Check if piece has already landed - if so, hard drop (instant lock)
+            if (has_asset_landed(asset, ctx)) {
+                return 1; // Signal for hard drop/instant lock
+            }
+            
+            // Otherwise, try to move down normally
+            if (asset->y + asset->height < ctx->height) {  // Check bottom boundary first
                 int old_y = asset->y;
                 asset->y++;
                 
-                // Check for collision with landed pieces
-                if (check_asset_collision(asset, ctx)) {
-                    asset->y = old_y;  // Revert movement
+                // Check for collision with landed pieces or if would land
+                if (check_asset_collision(asset, ctx) || has_asset_landed(asset, ctx)) {
+                    asset->y = old_y;  // Revert movement if collision or would land
                 }
             }
             break;
@@ -289,17 +294,42 @@ int clear_lines(struct RenderContext* ctx) {
         int points[] = {0, 100, 300, 500, 800};
         ctx->score += points[lines_cleared < 4 ? lines_cleared : 4] * (ctx->level + 1);
         
-        // Increase level every 10 lines
-        ctx->level = ctx->lines_cleared_total / 10;
+        // Increase level every 5 lines (was 10) for faster progression
+        ctx->level = ctx->lines_cleared_total / 5;
     }
     
     return lines_cleared;
+}
+
+// Check if game is over (pieces reached the top)
+int is_game_over(struct RenderContext* ctx, struct TetrisAsset* asset) {
+    // Check if the newly spawned asset immediately collides (can't be placed)
+    if (asset && check_asset_collision(asset, ctx)) {
+        return 1;  // Game over - new piece can't be placed
+    }
+    
+    // Alternative check: if top rows have pieces, it's getting dangerous
+    for (int y = 0; y < 3; y++) {  // Check top 3 rows
+        for (int x = 0; x < ctx->width; x++) {
+            if (ctx->board[y][x] == 1) {
+                // If we're at the very top, it's game over
+                if (y == 0) return 1;
+            }
+        }
+    }
+    
+    return 0;  // Game continues
 }
 
 // Game manager that handles continuous asset spawning
 void run_tetris_game(struct RenderContext* ctx, unsigned int refresh_rate) {
     struct TetrisAsset* current_asset = NULL;
     int game_running = 1;
+    
+    // Lock delay variables - simplified for quick adjustments only
+    int lock_delay_moves_allowed = 2; // Allow only 2 moves after landing
+    int lock_delay_moves_used = 0;
+    int is_in_lock_delay = 0;
     
     // Initialize the board for tracking landed pieces
     init_board(ctx);
@@ -317,15 +347,51 @@ void run_tetris_game(struct RenderContext* ctx, unsigned int refresh_rate) {
         if (current_asset == NULL) {
             unsigned char asset_id = random_asset();
             current_asset = spawn_asset(asset_id, ctx);
+            
+            // Reset lock delay state for new piece
+            is_in_lock_delay = 0;
+            lock_delay_moves_used = 0;
+            
+            // Check for game over immediately after spawning
+            if (is_game_over(ctx, current_asset)) {
+                printf("\n🎮 GAME OVER! 🎮\n");
+                printf("Final Score: %d\n", ctx->score);
+                printf("Level Reached: %d\n", ctx->level);
+                printf("Lines Cleared: %d\n", ctx->lines_cleared_total);
+                printf("\nPress any key to exit...\n");
+                get_single_input();
+                game_running = 0;
+                break;
+            }
         }
         
         // Game loop for current asset
         int fall_counter = 0;
-        // Dynamic speed: starts faster and increases with level
-        int fall_speed = 8 - ctx->level;  // Starts at 8, decreases with level (min 1)
-        if (fall_speed < 1) fall_speed = 1;  // Minimum speed
+        // Aggressive speed progression: starts very fast and gets even faster
+        int fall_speed = 6 - (ctx->level * 2);  // Starts at 6, decreases by 2 per level
+        if (fall_speed < 1) fall_speed = 1;  // Minimum speed (very fast!)
         
-        while (current_asset && !has_asset_landed(current_asset, ctx)) {
+        while (current_asset) {
+            // Check if asset has landed
+            int has_landed = has_asset_landed(current_asset, ctx);
+            
+            // Handle lock delay logic - simplified move-based system
+            if (has_landed && !is_in_lock_delay) {
+                // Asset just landed - start lock delay
+                is_in_lock_delay = 1;
+                lock_delay_moves_used = 0;
+            } else if (has_landed && is_in_lock_delay) {
+                // Asset is in lock delay - check if moves exhausted
+                if (lock_delay_moves_used >= lock_delay_moves_allowed) {
+                    // Used up allowed moves - lock the piece
+                    break;
+                }
+            } else if (!has_landed && is_in_lock_delay) {
+                // Asset moved away from landing position - cancel lock delay
+                is_in_lock_delay = 0;
+                lock_delay_moves_used = 0;
+            }
+            
             // Check for player input
             char input = get_single_input();
             if (input != 0) {
@@ -334,15 +400,28 @@ void run_tetris_game(struct RenderContext* ctx, unsigned int refresh_rate) {
                     game_running = 0;
                     break;
                 }
-                // Move asset based on input
-                manage_asset(input, current_asset, ctx);
+                // Move asset based on input (allowed even during lock delay)
+                unsigned char move_result = manage_asset(input, current_asset, ctx);
+                
+                // Check for hard drop signal (down arrow on landed piece)
+                if (move_result == 1) {
+                    // Hard drop - instantly lock the piece
+                    break;
+                }
+                
+                // If piece moved during lock delay, count the move
+                if (is_in_lock_delay) {
+                    lock_delay_moves_used++;
+                }
             }
             
-            // Make asset fall automatically
-            fall_counter++;
-            if (fall_counter >= fall_speed) {
-                current_asset->y++;  // Move asset down one row
-                fall_counter = 0;
+            // Make asset fall automatically (only if not in lock delay)
+            if (!is_in_lock_delay) {
+                fall_counter++;
+                if (fall_counter >= fall_speed) {
+                    current_asset->y++;  // Move asset down one row
+                    fall_counter = 0;
+                }
             }
             
             // Render current frame
@@ -359,8 +438,8 @@ void run_tetris_game(struct RenderContext* ctx, unsigned int refresh_rate) {
             // Check for and clear completed lines
             int lines_cleared = clear_lines(ctx);
             
-            // Shorter pause, and even shorter if lines were cleared (for better flow)
-            usleep(lines_cleared > 0 ? 200000 : 100000); // 0.2s if lines cleared, 0.1s otherwise
+            // Shorter pause, and even shorter if lines were cleared (for smoother flow)
+            usleep(lines_cleared > 0 ? 50000 : 30000); // 0.05s if lines cleared, 0.03s otherwise
         }
     }
     
