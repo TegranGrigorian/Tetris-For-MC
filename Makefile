@@ -3,8 +3,8 @@
 # src/main.c
 
 #compile the program
-all: src/main.o src/render/render.o src/test/test.o src/input/input.o src/assets/cube.o src/assets/line.o
-	gcc -o main src/main.o src/render/render.o src/test/test.o src/input/input.o src/assets/cube.o src/assets/line.o -lm
+all: src/main.o src/render/render.o src/test/test.o src/input/input.o src/assets/cube.o src/assets/line.o src/game/asset_manager.o
+	gcc -o main src/main.o src/render/render.o src/test/test.o src/input/input.o src/assets/cube.o src/assets/line.o src/game/asset_manager.o -lm
 
 #run the program
 run: all

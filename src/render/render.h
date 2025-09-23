@@ -32,6 +32,10 @@ struct RenderContext {
     int block_x;  // x position of the falling block (legacy, will be replaced)
     int block_y;  // y position of the falling block (legacy, will be replaced)
     struct TetrisAsset* current_asset;  // Current falling asset
+    char** board;  // 2D grid to track landed pieces (0 = empty, 1 = occupied)
+    int score;     // Player's score
+    int lines_cleared_total;  // Total lines cleared for speed calculation
+    int level;     // Current level/speed
 };
 
 // Function declarations
@@ -40,9 +44,14 @@ void render_frame_with_asset(struct RenderContext* ctx, struct TetrisAsset* asse
 void water_fall(struct RenderContext* ctx);
 void animate_falling_cube(struct RenderContext* ctx, unsigned char refresh_rate);
 void animate_falling_asset(struct RenderContext* ctx, struct TetrisAsset* asset, unsigned int refresh_rate);
+void animate_interactive_falling_asset(struct RenderContext* ctx, struct TetrisAsset* asset, unsigned int refresh_rate);
 void draw_asset(struct RenderContext* ctx, struct TetrisAsset* asset);
 struct TetrisAsset* create_cube_asset(int x, int y);
 struct TetrisAsset* create_line_asset(int x, int y);
 void free_asset(struct TetrisAsset* asset);
+void init_board(struct RenderContext* ctx);
+void free_board(struct RenderContext* ctx);
+void lock_asset_to_board(struct RenderContext* ctx, struct TetrisAsset* asset);
+void rotate_asset(struct TetrisAsset* asset);
 
 #endif // RENDER_H

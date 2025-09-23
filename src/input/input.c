@@ -42,6 +42,34 @@ char get_input() {
     
     return 0; // default
 }
+
+// Clear input buffer to prevent held key issues
+void clear_input_buffer() {
+    struct termios old_term, new_term;
+    char dummy;
+    
+    // Set up non-blocking mode
+    tcgetattr(STDIN_FILENO, &old_term);
+    new_term = old_term;
+    new_term.c_lflag &= ~(ICANON | ECHO);
+    new_term.c_cc[VMIN] = 0;  // Don't wait for characters
+    new_term.c_cc[VTIME] = 0; // No timeout
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
+    
+    // Read and discard all pending input
+    while (read(STDIN_FILENO, &dummy, 1) > 0) {
+        // Keep reading until buffer is empty
+    }
+    
+    // Restore terminal settings
+    tcsetattr(STDIN_FILENO, TCSANOW, &old_term);
+}
+
+// Get single input without buffering issues
+char get_single_input() {
+    clear_input_buffer();  // Clear any pending input first
+    return get_input();    // Then get fresh input
+}
 char get_arrow_key_input() {
     return get_input();
 }
