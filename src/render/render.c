@@ -55,7 +55,7 @@ struct TetrisAsset* create_cube_asset(int x, int y) {
     for (int i = 0; i < asset->height; i++) {
         asset->shape[i] = malloc(asset->width * sizeof(char));
         for (int j = 0; j < asset->width; j++) {
-            asset->shape[i][j] = '#';  // Fill with '#' for cube
+            asset->shape[i][j] = '@';  // Fill with solid block for cube
         }
     }
     
@@ -75,7 +75,7 @@ struct TetrisAsset* create_line_asset(int x, int y) {
     asset->shape = malloc(asset->height * sizeof(char*));
     for (int i = 0; i < asset->height; i++) {
         asset->shape[i] = malloc(asset->width * sizeof(char));
-        asset->shape[i][0] = '#';  // Vertical line
+        asset->shape[i][0] = '@';  // Vertical line
     }
     
     return asset;
@@ -124,7 +124,7 @@ void render_frame_with_asset(struct RenderContext* ctx, struct TetrisAsset* asse
             
             // First check if this position has a landed piece on the board
             if (ctx->board && ctx->board[y][x] == 1) {
-                pixel = '#';  // Landed piece
+                pixel = '@';  // Landed piece
             }
             
             // Then check if this position is part of the current falling asset
@@ -133,8 +133,8 @@ void render_frame_with_asset(struct RenderContext* ctx, struct TetrisAsset* asse
                 y >= asset->y && y < asset->y + asset->height) {
                 int asset_x = x - asset->x;
                 int asset_y = y - asset->y;
-                if (asset->shape[asset_y][asset_x] == '#') {
-                    pixel = '#';  // Current falling asset
+                if (asset->shape[asset_y][asset_x] == '@') {
+                    pixel = '@';  // Current falling asset
                 }
             }
             
@@ -197,7 +197,7 @@ void free_board(struct RenderContext* ctx) {
 void lock_asset_to_board(struct RenderContext* ctx, struct TetrisAsset* asset) {
     for (int y = 0; y < asset->height; y++) {
         for (int x = 0; x < asset->width; x++) {
-            if (asset->shape[y][x] == '#') {
+            if (asset->shape[y][x] == '@') {
                 int board_x = asset->x + x;
                 int board_y = asset->y + y;
                 
@@ -266,9 +266,9 @@ struct TetrisAsset* create_l_piece_asset(int x, int y) {
     }
     
     // Define L piece shape
-    strcpy(asset->shape[0], "# ");
-    strcpy(asset->shape[1], "# ");
-    strcpy(asset->shape[2], "##");
+    strcpy(asset->shape[0], "@ ");
+    strcpy(asset->shape[1], "@ ");
+    strcpy(asset->shape[2], "@@");
     
     return asset;
 }
@@ -290,9 +290,9 @@ struct TetrisAsset* create_j_piece_asset(int x, int y) {
     }
     
     // Define J piece shape
-    strcpy(asset->shape[0], " #");
-    strcpy(asset->shape[1], " #");
-    strcpy(asset->shape[2], "##");
+    strcpy(asset->shape[0], " @");
+    strcpy(asset->shape[1], " @");
+    strcpy(asset->shape[2], "@@");
     
     return asset;
 }
@@ -314,8 +314,8 @@ struct TetrisAsset* create_t_piece_asset(int x, int y) {
     }
     
     // Define T piece shape
-    strcpy(asset->shape[0], "###");
-    strcpy(asset->shape[1], " # ");
+    strcpy(asset->shape[0], "@@@");
+    strcpy(asset->shape[1], " @ ");
     
     return asset;
 }
@@ -337,8 +337,8 @@ struct TetrisAsset* create_s_piece_asset(int x, int y) {
     }
     
     // Define S piece shape
-    strcpy(asset->shape[0], " ##");
-    strcpy(asset->shape[1], "## ");
+    strcpy(asset->shape[0], " @@");
+    strcpy(asset->shape[1], "@@ ");
     
     return asset;
 }
@@ -360,8 +360,8 @@ struct TetrisAsset* create_z_piece_asset(int x, int y) {
     }
     
     // Define Z piece shape
-    strcpy(asset->shape[0], "## ");
-    strcpy(asset->shape[1], " ##");
+    strcpy(asset->shape[0], "@@ ");
+    strcpy(asset->shape[1], " @@");
     
     return asset;
 }

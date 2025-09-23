@@ -4,6 +4,7 @@
 #include "../render/render.h"
 #include "../input/input.h"
 #include "../game/asset_manager.h"
+#include "../game/game_manager.h"
 #include "test.h"
 
 void cube_fall_test() {
