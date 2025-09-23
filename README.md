@@ -30,3 +30,5 @@ Tetris-For-MC/
 
 # Notes
 Yes this is all in C and yes this isnt the best idc
+
+Also this only works on Linux, sorry Windows users (not really)
